@@ -48,5 +48,6 @@ public interface Neo4jDAO {
 	// By Joseph Blitzstein and Persi Diaconis (Stanford University). (Harvard, June 2006)
 	public void generateSimpleGraph(int nodes, int degree);
 	
+	public void saveGraph(String saveFile);
 	
 }

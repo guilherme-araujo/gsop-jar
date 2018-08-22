@@ -14,8 +14,10 @@
 /home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsop/database/Neo4jDAO.java
 /home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsop/database/Neo4jDriverInstance.java
 /home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsopJar/SimulationCaller.java
+/home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsopJar/SaveGraphCaller.java
 /home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsop/IndType.java
 /home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsop/controller/NewGraphController.java
+/home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsop/controller/SaveGraphController.java
 /home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsop/App.java
 /home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsop/SimulationResults.java
 /home/guilherme/eclipse-workspace/gsopJar/src/main/java/br/ufrn/imd/bioinfo/gsop/database/Neo4jEmbeddedDAO.java

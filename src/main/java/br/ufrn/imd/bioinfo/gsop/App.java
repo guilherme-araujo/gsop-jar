@@ -24,15 +24,15 @@ import br.ufrn.imd.bioinfo.gsop.model.GsopNode;
  */
 public class App {
 
-	private static final Driver driver = null;//Neo4jDriverInstance.getDriver();
+	private static final Driver driver = null;// Neo4jDriverInstance.getDriver();
 
 	private static List<Integer> typeAPopHistory;
 	private static List<Integer> typeBPopHistory;
 
-public static SimulationResults runSimV5(SimulationData simulationData) {
-		
+	public static SimulationResults runSimV5(SimulationData simulationData) {
+
 		SimulationResults simulationResults = new SimulationResults();
-	
+
 		QueriesController queriesController = new QueriesController();
 
 		Map<String, GsopNode> nodes = new HashMap<String, GsopNode>();
@@ -42,26 +42,26 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		uuidList = queriesController.listAllAsUUIDStringList();
 		long seed = System.nanoTime();
 		Collections.shuffle(uuidList, new Random(seed));
-		for(int i = 0; i < uuidList.size(); i++) {
+		for (int i = 0; i < uuidList.size(); i++) {
 			String uuid = uuidList.get(i);
 			GsopNode node = new GsopNode();
 			node.setHash(uuid);
 			double abRate = 0.5;
-			if(simulationData.isaOnly()) {
+			if (simulationData.isaOnly()) {
 				abRate = 1.0;
 			}
 			if (i < simulationData.getInitialPopulation() * abRate) {
 				node.setType(simulationData.getTypes().get(0).getType());
 				node.setCoeff(simulationData.getTypes().get(0).getInitialCoeff());
-				if(i < simulationData.getInitialPopulation() * abRate * simulationData.getEphStartRatio()) {
+				if (i < simulationData.getInitialPopulation() * abRate * simulationData.getEphStartRatio()) {
 					Eph e = new Eph(simulationData.getEphBonus());
 					node.setEph(e);
 				}
-					
+
 			} else {
 				node.setType(simulationData.getTypes().get(1).getType());
 				node.setCoeff(simulationData.getTypes().get(1).getInitialCoeff());
-				node.setEph(null);				
+				node.setEph(null);
 			}
 			node.setNeighborsHashList(queriesController.listAllNeighborsAsUUIDStringList(uuid));
 			nodes.put(uuid, node);
@@ -82,16 +82,21 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		Simulation.setPartialFitnessAvg(new ArrayList<Double>());
 
 		long tStart = System.currentTimeMillis();
-		
+		simulationResults.fixationCycles = -1;
+
 		for (count = 0; count < simulationData.getCycles(); count++) {
 			Simulation.cycleV5(nodes, simulationData.getDeathRate(), simulationData.isNeighborhoodInheritance());
-			
+
 			List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
 
 			if (count % step == 0) {
 				Simulation.addPartialFitnessAvg(Simulation.avgFitness(nodeslist));
 				typeAPopHistory.add(Simulation.typeCount("A", nodeslist));
 				typeBPopHistory.add(Simulation.typeCount("B", nodeslist));
+			}
+			if (Simulation.typeCount("A", nodeslist) == 0 || Simulation.typeCount("A", nodeslist) == nodeslist.size()) {
+				simulationResults.fixationCycles = count;
+				break;
 			}
 			// System.out.println((nodes.size()));
 		}
@@ -101,26 +106,26 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		double elapsedSeconds = tDelta / 1000.0;
 
 		List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
-		
+
 		int typeAWithEph = 0;
 		int typeBWithEph = 0;
-		
+
 		simulationData.setNodeDetail(new ArrayList<String>());
-		
-		for(GsopNode n : nodeslist) {
-			boolean temEph = n.getEph()!=null;
-			String strTemEph = temEph?"S":"N";
-			if(temEph) {
-				if(n.getType().equals("A")) {
+
+		for (GsopNode n : nodeslist) {
+			boolean temEph = n.getEph() != null;
+			String strTemEph = temEph ? "S" : "N";
+			if (temEph) {
+				if (n.getType().equals("A")) {
 					typeAWithEph++;
-				}else {
+				} else {
 					typeBWithEph++;
 				}
 			}
-			simulationData.getNodeDetail().add(n.getHash()+" temEph: "+strTemEph+" Type: "+n.getType()+
-					" Coeff: "+n.getCoeff()+" Fitness: "+n.getFitness());
+			simulationData.getNodeDetail().add(n.getHash() + " temEph: " + strTemEph + " Type: " + n.getType()
+					+ " Coeff: " + n.getCoeff() + " Fitness: " + n.getFitness());
 		}
-		
+
 		simulationResults.finalNodes = (ArrayList<GsopNode>) nodeslist;
 		simulationResults.typeAWithEph = typeAWithEph;
 		simulationResults.typeBWithEph = typeBWithEph;
@@ -128,16 +133,19 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		simulationResults.partialFitnessAvg = (ArrayList<Double>) Simulation.getPartialFitnessAvg();
 		simulationResults.avgCoeff = Simulation.avgCoeff(nodeslist);
 		simulationResults.avgFitness = Simulation.avgFitness(nodeslist);
-		/*String result = Simulation.printTypeCount(nodeslist) + "\n" + Simulation.printAvgCoeff(nodeslist) + "\n"
-				+ Simulation.printAvgFitness(nodeslist);
-		result += "\n Cycles: " + count + "\nTime: " + elapsedSeconds 
-				+ " A with eph: "+typeAWithEph+" B with eph: "+typeBWithEph;*/
+		/*
+		 * String result = Simulation.printTypeCount(nodeslist) + "\n" +
+		 * Simulation.printAvgCoeff(nodeslist) + "\n" +
+		 * Simulation.printAvgFitness(nodeslist); result += "\n Cycles: " + count +
+		 * "\nTime: " + elapsedSeconds +
+		 * " A with eph: "+typeAWithEph+" B with eph: "+typeBWithEph;
+		 */
 
 		return simulationResults;
 	}
-	
+
 	public static String runSimV4(SimulationData simulationData) {
-		
+
 		QueriesController queriesController = new QueriesController();
 
 		Map<String, GsopNode> nodes = new HashMap<String, GsopNode>();
@@ -147,7 +155,7 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		uuidList = queriesController.listAllAsUUIDStringList();
 		long seed = System.nanoTime();
 		Collections.shuffle(uuidList, new Random(seed));
-		for(int i = 0; i < uuidList.size(); i++) {
+		for (int i = 0; i < uuidList.size(); i++) {
 			String uuid = uuidList.get(i);
 			GsopNode node = new GsopNode();
 			node.setHash(uuid);
@@ -155,11 +163,11 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 				node.setType(simulationData.getTypes().get(0).getType());
 				node.setCoeff(simulationData.getTypes().get(0).getInitialCoeff());
 				Eph e = new Eph(simulationData.getEphBonus());
-				node.setEph(e);				
+				node.setEph(e);
 			} else {
 				node.setType(simulationData.getTypes().get(1).getType());
 				node.setCoeff(simulationData.getTypes().get(1).getInitialCoeff());
-				node.setEph(null);				
+				node.setEph(null);
 			}
 			node.setNeighborsHashList(queriesController.listAllNeighborsAsUUIDStringList(uuid));
 			nodes.put(uuid, node);
@@ -180,10 +188,10 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		Simulation.setPartialFitnessAvg(new ArrayList<Double>());
 
 		long tStart = System.currentTimeMillis();
-		
+
 		for (count = 0; count < simulationData.getCycles(); count++) {
 			Simulation.cycleV4(nodes, simulationData.getDeathRate());
-			
+
 			List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
 
 			if (count % step == 0) {
@@ -199,38 +207,36 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		double elapsedSeconds = tDelta / 1000.0;
 
 		List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
-		
+
 		int typeAWithEph = 0;
 		int typeBWithEph = 0;
-		
+
 		simulationData.setNodeDetail(new ArrayList<String>());
-		
-		for(GsopNode n : nodeslist) {
-			boolean temEph = n.getEph()!=null;
-			String strTemEph = temEph?"S":"N";
-			if(temEph) {
-				if(n.getType().equals("A")) {
+
+		for (GsopNode n : nodeslist) {
+			boolean temEph = n.getEph() != null;
+			String strTemEph = temEph ? "S" : "N";
+			if (temEph) {
+				if (n.getType().equals("A")) {
 					typeAWithEph++;
-				}else {
+				} else {
 					typeBWithEph++;
 				}
 			}
-			simulationData.getNodeDetail().add(n.getHash()+" temEph: "+strTemEph+" Type: "+n.getType()+
-					" Coeff: "+n.getCoeff()+" Fitness: "+n.getFitness());
+			simulationData.getNodeDetail().add(n.getHash() + " temEph: " + strTemEph + " Type: " + n.getType()
+					+ " Coeff: " + n.getCoeff() + " Fitness: " + n.getFitness());
 		}
-		
+
 		String result = Simulation.printTypeCount(nodeslist) + "\n" + Simulation.printAvgCoeff(nodeslist) + "\n"
 				+ Simulation.printAvgFitness(nodeslist);
-		result += "\n Cycles: " + count + "\nTime: " + elapsedSeconds 
-				+ " A with eph: "+typeAWithEph+" B with eph: "+typeBWithEph;
+		result += "\n Cycles: " + count + "\nTime: " + elapsedSeconds + " A with eph: " + typeAWithEph + " B with eph: "
+				+ typeBWithEph;
 
-		
-		
 		return result;
 	}
-	
+
 	public static String runSimV3(SimulationData simulationData) {
-		
+
 		QueriesController queriesController = new QueriesController();
 
 		Map<String, GsopNode> nodes = new HashMap<String, GsopNode>();
@@ -240,7 +246,7 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		uuidList = queriesController.listAllAsUUIDStringList();
 		long seed = System.nanoTime();
 		Collections.shuffle(uuidList, new Random(seed));
-		for(int i = 0; i < uuidList.size(); i++) {
+		for (int i = 0; i < uuidList.size(); i++) {
 			String uuid = uuidList.get(i);
 			GsopNode node = new GsopNode();
 			node.setHash(uuid);
@@ -254,8 +260,6 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 			node.setNeighborsHashList(queriesController.listAllNeighborsAsUUIDStringList(uuid));
 			nodes.put(uuid, node);
 		}
-		
-			
 
 		int count = 0;
 
@@ -272,10 +276,10 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		Simulation.setPartialFitnessAvg(new ArrayList<Double>());
 
 		long tStart = System.currentTimeMillis();
-		
+
 		for (count = 0; count < simulationData.getCycles(); count++) {
 			Simulation.cycleV3(nodes, simulationData.getDeathRate());
-			
+
 			List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
 
 			if (count % step == 0) {
@@ -291,7 +295,7 @@ public static SimulationResults runSimV5(SimulationData simulationData) {
 		double elapsedSeconds = tDelta / 1000.0;
 
 		List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
-		
+
 		String result = Simulation.printTypeCount(nodeslist) + "\n" + Simulation.printAvgCoeff(nodeslist) + "\n"
 				+ Simulation.printAvgFitness(nodeslist);
 		result += "\n Cycles: " + count + "\nTime: " + elapsedSeconds;

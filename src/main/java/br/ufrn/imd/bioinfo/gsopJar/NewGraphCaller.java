@@ -36,6 +36,19 @@ private int numNodes;
 		generatedNodes = queries.listAllAsStringWithNeighbours();		
 		
 	}
+	
+	public void generateComplete() {
+		newGraph.generateCompleteGraph(numNodes);
+		
+		generatedNodes = queries.listAllAsStringWithNeighbours();
+	}
+	
+	public void generateSimple() {
+		newGraph.generateSimpleGraph(numNodes, numEdges);
+		
+		generatedNodes = queries.listAllAsStringWithNeighbours();
+	}
+	
 
 	public int getNumNodes() {
 		return numNodes;

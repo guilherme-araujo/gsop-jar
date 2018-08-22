@@ -86,5 +86,11 @@ public class Neo4jBoltDAO implements Neo4jDAO{
 			session.run("CALL apoc.generate.simple("+degreeList+",'TMP_LABEL','TMP_REL')");
 		}
 	}
+	
+	@Override
+	public void saveGraph(String saveFile) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -162,5 +162,14 @@ public class Neo4jEmbeddedDAO implements Neo4jDAO {
 		}
 
 	}
+	
+	@Override
+	public void saveGraph(String saveFile) {
+		try (Transaction tx = db.beginTx()){
+			db.execute("CALL apoc.export.cypher.all(\""+saveFile+"\",{})");
+			tx.success();
+		}
+		
+	}
 
 }

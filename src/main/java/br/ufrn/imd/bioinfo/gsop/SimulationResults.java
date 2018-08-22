@@ -15,6 +15,7 @@ public class SimulationResults {
 	public double elapsedSeconds;
 	public double avgCoeff;
 	public double avgFitness;
+	public int fixationCycles;
 	
 	
 }

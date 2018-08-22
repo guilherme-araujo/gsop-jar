@@ -1,3 +1,4 @@
+br/ufrn/imd/bioinfo/gsopJar/SimulationCaller.class
 br/ufrn/imd/bioinfo/gsop/model/Eph.class
 br/ufrn/imd/bioinfo/gsop/GraphDatabaseImpementation.class
 br/ufrn/imd/bioinfo/gsop/Simulation.class
@@ -8,11 +9,14 @@ br/ufrn/imd/bioinfo/gsopJar/App.class
 br/ufrn/imd/bioinfo/gsop/IndType.class
 br/ufrn/imd/bioinfo/gsop/RandomGraphTypes.class
 br/ufrn/imd/bioinfo/gsop/controller/NewGraphController.class
+br/ufrn/imd/bioinfo/gsopJar/App$1.class
+br/ufrn/imd/bioinfo/gsop/SimulationResults.class
 br/ufrn/imd/bioinfo/gsop/database/Backend.class
 br/ufrn/imd/bioinfo/gsop/App.class
 br/ufrn/imd/bioinfo/gsop/SimulationData.class
 br/ufrn/imd/bioinfo/gsop/database/Neo4jBootstrapper.class
 br/ufrn/imd/bioinfo/gsop/database/Neo4jBoltDAO.class
 br/ufrn/imd/bioinfo/gsop/controller/QueriesController.class
+br/ufrn/imd/bioinfo/gsopJar/NewGraphCaller.class
 br/ufrn/imd/bioinfo/gsop/database/Neo4jDAO.class
 br/ufrn/imd/bioinfo/gsop/database/Neo4jEmbeddedDAO.class
