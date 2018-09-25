@@ -41,6 +41,7 @@ public class App {
 		Integer threads = 1;
 		String saveFile = "";
 		String graphtype = "";
+		Double ephStartRatio = 0.5;
 
 		// Parsing arguments
 		for (String arg : args) {
@@ -72,6 +73,9 @@ public class App {
 			} else if (arg.contains("--graphtype")) {
 				String gtype[] = arg.split("=");
 				graphtype = gtype[1];
+			} else if (arg.contains("--ephstartratio")) {
+				String esr[] = arg.split("=");
+				ephStartRatio = Double.parseDouble(esr[1]);
 			}
 
 		}
@@ -101,6 +105,7 @@ public class App {
 			SimulationCaller simulation = new SimulationCaller();
 			simulation.getSimulationData().setCycles(cycles);
 			simulation.getSimulationData().setEphBonus(ephBonus);
+			simulation.getSimulationData().setEphStartRatio(ephStartRatio);			
 			System.out.println(samples + " samples will be executed");
 			long tStart = System.currentTimeMillis();
 
