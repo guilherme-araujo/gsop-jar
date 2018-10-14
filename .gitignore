@@ -1,3 +1,9 @@
-target/*
-.class
-MANIFEST.MF
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+*.iml
+.idea/
+.eclipse
