@@ -30,16 +30,18 @@ public class Simulation {
 		List<String> keys = new ArrayList<String>(nodes.keySet());
 		// System.out.println(dieCount);
 		// System.out.println("Keys size "+keys.size());
+		Collections.shuffle(keys);
+		
 		for (int i = 0; i < dieCount; i++) {
-			int chosen = gerador.nextInt(nodes.size());
-			selectedKeys.add(keys.get(chosen));
+			//int chosen = gerador.nextInt(nodes.size());
+			selectedKeys.add(keys.get(i));
 		}
 
 		// deaths in case of neighborhood inheritance
 		if (neighborhoodInheritance) {
-			for (int i = 0; i < dieCount; i++) {
-				int chosen = gerador.nextInt(nodes.size());
-				selectedKeysDeath.add(keys.get(chosen));
+			for (int i = dieCount; i < dieCount*2; i++) {
+				//int chosen = gerador.nextInt(nodes.size());
+				selectedKeysDeath.add(keys.get(i));
 			}
 		}
 
@@ -64,11 +66,11 @@ public class Simulation {
 
 			Eph eph = null;
 
-			if (!neighborhoodInheritance) {
+			//if (!neighborhoodInheritance) {
 				// Remove eph do individuo que morreu
-				eph = n.getEph();
-				n.setEph(null);
-			}
+				
+				
+			//}
 			
 			GsopNode sorteado;
 			if(roleta.size()==0) {
@@ -83,6 +85,8 @@ public class Simulation {
 			sorteado.setFitness(sorteado.getFitness() + 1);
 
 			if (!neighborhoodInheritance) {
+				eph = n.getEph();
+				n.setEph(null);
 				// substituir tipo do nó
 				n.setCoeff(sorteado.getRawCoeff());
 				n.setType(sorteado.getType());
@@ -100,6 +104,7 @@ public class Simulation {
 
 				GsopNode dyingNode = nodes.get(selectedKeysDeath.get(0));
 				String selectedUUID = dyingNode.getHash();
+				eph = dyingNode.getEph();
 				for (String neighborUUID : dyingNode.getNeighborsHashList()) {
 					GsopNode neighbor = nodes.get(neighborUUID);
 
@@ -143,27 +148,43 @@ public class Simulation {
 
 			}
 
-			if (!neighborhoodInheritance) {
-				// sorteia vizinho para ocupar o eph
-				int ephChosen = gerador.nextInt(neighborsHashList.size());
-				// vizinho ocupa o eph caso não tenha um.
-
-				GsopNode recebedorEph = nodes.get(neighborsHashList.get(ephChosen));
-				if (recebedorEph.getEph() == null) {
-					recebedorEph.setEph(eph);
-				} else {
-					long seed = System.nanoTime();
-					Collections.shuffle(keys, new Random(seed));
-					for (String k : keys) {
-						recebedorEph = nodes.get(k);
-						if (recebedorEph.getEph() == null) {
-							recebedorEph.setEph(eph);
-							break;
-						}
+			int ephChosen = gerador.nextInt(neighborsHashList.size());
+			GsopNode recebedorEph = nodes.get(neighborsHashList.get(ephChosen));
+			if (recebedorEph.getEph() == null) {
+				recebedorEph.setEph(eph);
+			} else {
+				long seed = System.nanoTime();
+				List<String> currentKeys = new ArrayList<String>(nodes.keySet());
+				Collections.shuffle(currentKeys, new Random(seed));
+				for (String k : currentKeys) {
+					recebedorEph = nodes.get(k);
+					if (recebedorEph.getEph() == null) {
+						recebedorEph.setEph(eph);
+						break;
 					}
 				}
-
 			}
+//			if (!neighborhoodInheritance) {
+//				// sorteia vizinho para ocupar o eph
+//				int ephChosen = gerador.nextInt(neighborsHashList.size());
+//				// vizinho ocupa o eph caso não tenha um.
+//
+//				GsopNode recebedorEph = nodes.get(neighborsHashList.get(ephChosen));
+//				if (recebedorEph.getEph() == null) {
+//					recebedorEph.setEph(eph);
+//				} else {
+//					long seed = System.nanoTime();
+//					Collections.shuffle(keys, new Random(seed));
+//					for (String k : keys) {
+//						recebedorEph = nodes.get(k);
+//						if (recebedorEph.getEph() == null) {
+//							recebedorEph.setEph(eph);
+//							break;
+//						}
+//					}
+//				}
+//
+//			}
 
 		}
 

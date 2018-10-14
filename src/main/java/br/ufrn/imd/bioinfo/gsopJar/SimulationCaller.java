@@ -90,6 +90,7 @@ private int builtGraphSize = 0;
 		simulationData.getTypes().get(0).setInitialCoeff(1.0);
 		simulationData.getTypes().get(1).setInitialCoeff(1.0);
 		simulationData.setInitialPopulation(builtGraphSize);
+		simulationData.setNeighborhoodInheritance(true);
 		//simResult = App.runSimV5(simulationData);
 		simulationResults = App.runSimV5(simulationData);
 	}
