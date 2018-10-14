@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -101,7 +101,7 @@ public class App {
 
 		} else if (operation.equals("simulation")) {
 
-			ArrayList<SimulationResults> resultList = new ArrayList<SimulationResults>();
+			//ArrayList<SimulationResults> resultList = new ArrayList<SimulationResults>();
 			SimulationCaller simulation = new SimulationCaller();
 			simulation.getSimulationData().setCycles(cycles);
 			simulation.getSimulationData().setEphBonus(ephBonus);
@@ -122,12 +122,12 @@ public class App {
 				//System.out.println("Sample " + count);
 				simulation.runSimV5();
 				SimulationResults results = simulation.getSimulationResults();
-				resultList.add(results);
+				//resultList.add(results);
 				int typeACount = Simulation.typeCount("A", results.finalNodes);
 				int typeBCount = Simulation.typeCount("B", results.finalNodes);
-				String out = /*"Sample " + count + */" A: " + typeACount + " B: " + typeBCount + " Avg. coeff: "
-						+ results.avgCoeff + " Avg. fitness: " + results.avgFitness + " time: "
-						+ results.elapsedSeconds+" fixation cycles: "+results.fixationCycles;
+				//String out = /*"Sample " + count + */" A: " + typeACount + " B: " + typeBCount + " Avg. coeff: "
+				//		+ results.avgCoeff + " Avg. fitness: " + results.avgFitness + " time: "
+				//		+ results.elapsedSeconds+" fixation cycles: "+results.fixationCycles;
 				csv += typeACount + ";" + typeBCount + ";" + results.fixationCycles + "\n";
 
 				//System.out.println(out);
@@ -149,7 +149,6 @@ public class App {
 					System.out.println(latch.getCount()+" left...");
 				}
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			/*for(Runnable task : tasks) {

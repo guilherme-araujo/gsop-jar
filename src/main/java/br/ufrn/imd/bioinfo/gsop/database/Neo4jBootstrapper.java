@@ -3,18 +3,18 @@ package br.ufrn.imd.bioinfo.gsop.database;
 import static java.util.Arrays.asList;
 
 import java.io.File;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.graphdb.factory.GraphDatabaseSettings;
+//import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.internal.kernel.api.exceptions.KernelException;
 import org.neo4j.kernel.impl.proc.Procedures;
 import org.neo4j.kernel.internal.GraphDatabaseAPI;
 
-import apoc.ApocConfiguration;
+//import apoc.ApocConfiguration;
 
 //@WebListener
 public class Neo4jBootstrapper {//implements ServletContextListener {

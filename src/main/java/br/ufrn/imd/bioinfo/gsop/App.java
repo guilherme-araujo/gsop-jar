@@ -14,7 +14,7 @@ import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
 import br.ufrn.imd.bioinfo.gsop.controller.QueriesController;
-import br.ufrn.imd.bioinfo.gsop.database.Neo4jDriverInstance;
+//import br.ufrn.imd.bioinfo.gsop.database.Neo4jDriverInstance;
 import br.ufrn.imd.bioinfo.gsop.model.Eph;
 import br.ufrn.imd.bioinfo.gsop.model.GsopNode;
 
@@ -37,8 +37,9 @@ public class App {
 
 		Map<String, GsopNode> nodes = new HashMap<String, GsopNode>();
 
-		// Popular lista de nós (pre-loading de vizinhos?)
 		List<String> uuidList = new ArrayList<String>();
+		
+		// Popular lista de nós e pre-loading de vizinhos
 		uuidList = queriesController.listAllAsUUIDStringList();
 		long seed = System.nanoTime();
 		Collections.shuffle(uuidList, new Random(seed));
@@ -56,6 +57,8 @@ public class App {
 				if (i < simulationData.getInitialPopulation() * abRate * simulationData.getEphStartRatio()) {
 					Eph e = new Eph(simulationData.getEphBonus());
 					node.setEph(e);
+				}else {
+					node.setEph(null);
 				}
 
 			} else {
@@ -77,9 +80,9 @@ public class App {
 		if (step == 0)
 			step++;
 
-		typeAPopHistory = new ArrayList<Integer>();
-		typeBPopHistory = new ArrayList<Integer>();
-		Simulation.setPartialFitnessAvg(new ArrayList<Double>());
+//		typeAPopHistory = new ArrayList<Integer>();
+//		typeBPopHistory = new ArrayList<Integer>();
+//		Simulation.setPartialFitnessAvg(new ArrayList<Double>());
 
 		long tStart = System.currentTimeMillis();
 		simulationResults.fixationCycles = -1;
@@ -89,11 +92,13 @@ public class App {
 
 			List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
 
-			if (count % step == 0) {
-				Simulation.addPartialFitnessAvg(Simulation.avgFitness(nodeslist));
-				typeAPopHistory.add(Simulation.typeCount("A", nodeslist));
-				typeBPopHistory.add(Simulation.typeCount("B", nodeslist));
-			}
+//			if (count % step == 0) {
+//				Simulation.addPartialFitnessAvg(Simulation.avgFitness(nodeslist));
+//				typeAPopHistory.add(Simulation.typeCount("A", nodeslist));
+//				typeBPopHistory.add(Simulation.typeCount("B", nodeslist));
+//			System.out.println("cycle "+count+" "+Simulation.typeCount("A", nodeslist)+" "+
+//					Simulation.typeCount("B", nodeslist));
+//			}
 			if (Simulation.typeCount("A", nodeslist) == 0 || Simulation.typeCount("A", nodeslist) == nodeslist.size()) {
 				simulationResults.fixationCycles = count;
 				break;
@@ -107,32 +112,32 @@ public class App {
 
 		List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
 
-		int typeAWithEph = 0;
-		int typeBWithEph = 0;
+		//int typeAWithEph = 0;
+		//int typeBWithEph = 0;
 
-		simulationData.setNodeDetail(new ArrayList<String>());
+//		simulationData.setNodeDetail(new ArrayList<String>());
 
-		for (GsopNode n : nodeslist) {
-			boolean temEph = n.getEph() != null;
-			String strTemEph = temEph ? "S" : "N";
-			if (temEph) {
-				if (n.getType().equals("A")) {
-					typeAWithEph++;
-				} else {
-					typeBWithEph++;
-				}
-			}
-			simulationData.getNodeDetail().add(n.getHash() + " temEph: " + strTemEph + " Type: " + n.getType()
-					+ " Coeff: " + n.getCoeff() + " Fitness: " + n.getFitness());
-		}
+//		for (GsopNode n : nodeslist) {
+//			boolean temEph = n.getEph() != null;
+//			String strTemEph = temEph ? "S" : "N";
+//			if (temEph) {
+//				if (n.getType().equals("A")) {
+//					typeAWithEph++;
+//				} else {
+//					typeBWithEph++;
+//				}
+//			}
+//			simulationData.getNodeDetail().add(n.getHash() + " temEph: " + strTemEph + " Type: " + n.getType()
+//					+ " Coeff: " + n.getCoeff() + " Fitness: " + n.getFitness());
+//		}
 
 		simulationResults.finalNodes = (ArrayList<GsopNode>) nodeslist;
-		simulationResults.typeAWithEph = typeAWithEph;
-		simulationResults.typeBWithEph = typeBWithEph;
+//		simulationResults.typeAWithEph = typeAWithEph;
+//		simulationResults.typeBWithEph = typeBWithEph;
 		simulationResults.elapsedSeconds = elapsedSeconds;
-		simulationResults.partialFitnessAvg = (ArrayList<Double>) Simulation.getPartialFitnessAvg();
-		simulationResults.avgCoeff = Simulation.avgCoeff(nodeslist);
-		simulationResults.avgFitness = Simulation.avgFitness(nodeslist);
+//		simulationResults.partialFitnessAvg = (ArrayList<Double>) Simulation.getPartialFitnessAvg();
+//		simulationResults.avgCoeff = Simulation.avgCoeff(nodeslist);
+//		simulationResults.avgFitness = Simulation.avgFitness(nodeslist);
 		/*
 		 * String result = Simulation.printTypeCount(nodeslist) + "\n" +
 		 * Simulation.printAvgCoeff(nodeslist) + "\n" +

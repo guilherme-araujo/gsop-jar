@@ -21,6 +21,7 @@ public class Simulation {
 		// Contagem de nascimentos e mortes
 		Random gerador = new Random();
 
+		
 		int dieCount = (int) ((double) nodes.size() * (deathRate - 1));
 		if (dieCount == 0)
 			dieCount++;
@@ -44,7 +45,7 @@ public class Simulation {
 				selectedKeysDeath.add(keys.get(i));
 			}
 		}
-
+		
 		// births
 		for (String key : selectedKeys) {
 
@@ -53,7 +54,9 @@ public class Simulation {
 			// gerar roleta baseado em vizinhança
 			List<String> roleta = new ArrayList<String>();
 			List<String> neighborsHashList = n.getNeighborsHashList();
-
+			if(!neighborsHashList.contains(key)) {
+				neighborsHashList.add(key);
+			}
 			for (String s : neighborsHashList) {
 
 				GsopNode neighbour = nodes.get(s);
@@ -66,12 +69,7 @@ public class Simulation {
 
 			Eph eph = null;
 
-			//if (!neighborhoodInheritance) {
-				// Remove eph do individuo que morreu
-				
-				
-			//}
-			
+			//sorteado é o nó que irá propagar o seu tipo
 			GsopNode sorteado;
 			if(roleta.size()==0) {
 				//System.out.println("Nó sem vizinhos "+key);
@@ -91,14 +89,13 @@ public class Simulation {
 				n.setCoeff(sorteado.getRawCoeff());
 				n.setType(sorteado.getType());
 				n.setFitness(0);
-
 				// verifica se o nascido é do tipo gerador, e se vai gerar eph
 				if (n.getType() == "A") {
 					int sorteioGeracao = gerador.nextInt(100);
 					if (sorteioGeracao < (simulationData.getEphBirthGenerationChance() * 100)) {
 						n.setEph(new Eph(simulationData.getEphBonus()));
 					}
-				}
+				}				
 			} else {
 				// mata nó antigo e aproveita o uuid para o nó que vai nascer
 
@@ -111,9 +108,10 @@ public class Simulation {
 					if (!neighbor.getHash().equals(dyingNode.getHash()))
 						neighbor.getNeighborsHashList().remove(selectedUUID);
 				}
+				
 				nodes.remove(selectedUUID);
 				selectedKeysDeath.remove(0);
-
+				
 				// gera novo nó, atualiza listas de vizinhança e adiciona-o à lista de nós
 				GsopNode newNode = new GsopNode();
 				newNode.setHash(selectedUUID);
@@ -145,22 +143,31 @@ public class Simulation {
 				}
 
 				nodes.put(selectedUUID, newNode);
+				//System.out.println(nodes.get(selectedUUID).getCoeff());
 
 			}
 
-			int ephChosen = gerador.nextInt(neighborsHashList.size());
-			GsopNode recebedorEph = nodes.get(neighborsHashList.get(ephChosen));
-			if (recebedorEph.getEph() == null) {
-				recebedorEph.setEph(eph);
-			} else {
+//			int ephChosen = gerador.nextInt(neighborsHashList.size());
+//			GsopNode recebedorEph = nodes.get(neighborsHashList.get(ephChosen));
+			List<String> currentKeys = new ArrayList<String>(neighborsHashList);
+			Collections.shuffle(currentKeys);
+			boolean pegou = false;
+			for(String k : currentKeys) {
+				
+				if (nodes.get(k).getEph() == null && nodes.get(k).getType()=="A") {
+					nodes.get(k).setEph(eph);
+					pegou = true;
+				} 
+			}
+			
+			if (!pegou) {
 				long seed = System.nanoTime();
-				List<String> currentKeys = new ArrayList<String>(nodes.keySet());
+				currentKeys = new ArrayList<String>(nodes.keySet());
 				Collections.shuffle(currentKeys, new Random(seed));
 				for (String k : currentKeys) {
-					recebedorEph = nodes.get(k);
-					if (recebedorEph.getEph() == null) {
-						recebedorEph.setEph(eph);
-						break;
+					if (nodes.get(k).getEph() == null && nodes.get(k).getType()=="A") {
+						nodes.get(k).setEph(eph);
+						break;						
 					}
 				}
 			}
