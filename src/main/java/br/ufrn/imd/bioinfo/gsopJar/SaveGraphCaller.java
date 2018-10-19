@@ -14,4 +14,7 @@ public class SaveGraphCaller {
 		saveGraph.saveGraph(saveFile);
 	}
 
+	public void restoreGraph(String saveFile) {
+		saveGraph.restoreGraph(saveFile);
+	}
 }

@@ -182,6 +182,9 @@ public class App {
 		} else if(operation.equals("backup")) {
 			SaveGraphCaller saveGraphCaller = new SaveGraphCaller();
 			saveGraphCaller.saveGraph(saveFile);
+		}else if(operation.equals("restore")) {
+			SaveGraphCaller saveGraphCaller = new SaveGraphCaller();
+			saveGraphCaller.restoreGraph(saveFile);
 		}
 
 	}

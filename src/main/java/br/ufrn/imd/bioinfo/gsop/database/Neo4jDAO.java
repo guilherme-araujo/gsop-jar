@@ -50,4 +50,6 @@ public interface Neo4jDAO {
 	
 	public void saveGraph(String saveFile);
 	
+	public void restoreGraph(String saveFile);
+	
 }

@@ -92,5 +92,11 @@ public class Neo4jBoltDAO implements Neo4jDAO{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void restoreGraph(String saveFile) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

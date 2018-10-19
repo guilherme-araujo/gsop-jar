@@ -62,6 +62,16 @@ public class Neo4jBootstrapper {//implements ServletContextListener {
 
 				);
 		
+		apocProcedures = asList(apoc.cypher.Cypher.class);
+		apocProcedures.forEach((proc) -> {
+			try {
+				procedures.registerProcedure(proc);
+			} catch (KernelException e) {
+				throw new RuntimeException("Error registering " + proc, e);
+			}
+		}
+
+				);
 		
 
 		Backend.init(graphDb);

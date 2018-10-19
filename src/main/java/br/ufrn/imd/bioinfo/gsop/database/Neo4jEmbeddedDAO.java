@@ -171,5 +171,19 @@ public class Neo4jEmbeddedDAO implements Neo4jDAO {
 		}
 		
 	}
+	
+	@Override
+	public void restoreGraph(String saveFile) {
+		/*try (Transaction tx = db.beginTx()){
+			db.execute("MATCH (n) DETACH DELETE n");
+			tx.success();
+		}*/
+		try (Transaction tx = db.beginTx()){
+			String exec = "CALL apoc.cypher.runFile(\'file:"+saveFile+"\')";
+			System.out.println(exec);			
+			db.execute(exec);
+			tx.success();
+		}
+	}
 
 }

@@ -15,4 +15,8 @@ public class SaveGraphController {
 		dao.saveGraph(saveFile);
 		
 	}
+	
+	public void restoreGraph(String saveFile) {
+		dao.restoreGraph(saveFile);
+	}
 }
