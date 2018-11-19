@@ -29,6 +29,93 @@ public class App {
 	private static List<Integer> typeAPopHistory;
 	private static List<Integer> typeBPopHistory;
 
+	public static SimulationResults runSimV6(SimulationData simulationData) {
+
+		SimulationResults simulationResults = new SimulationResults();
+
+		QueriesController queriesController = new QueriesController();
+
+		Map<String, GsopNode> nodes = new HashMap<String, GsopNode>();
+
+		List<String> uuidList = new ArrayList<String>();
+		
+		// Popular lista de nós e pre-loading de vizinhos
+		uuidList = queriesController.listAllAsUUIDStringList();
+		long seed = System.nanoTime();
+		Collections.shuffle(uuidList, new Random(seed));
+		for (int i = 0; i < uuidList.size(); i++) {
+			String uuid = uuidList.get(i);
+			GsopNode node = new GsopNode();
+			node.setHash(uuid);
+			double abRate = 0.5;
+			if (simulationData.isaOnly()) {
+				abRate = 1.0;
+			}
+			if (i < simulationData.getInitialPopulation() * abRate) {
+				node.setType(simulationData.getTypes().get(0).getType());
+				node.setCoeff(simulationData.getTypes().get(0).getInitialCoeff());
+				if (i < simulationData.getInitialPopulation() * abRate * simulationData.getEphStartRatio()) {
+					Eph e = new Eph(simulationData.getEphBonus());
+					e.setTime(simulationData.getEphTime());
+					node.setEph(e);
+				}else {
+					node.setEph(null);
+				}
+
+			} else {
+				node.setType(simulationData.getTypes().get(1).getType());
+				node.setCoeff(simulationData.getTypes().get(1).getInitialCoeff());
+				node.setEph(null);
+			}
+			node.setNeighborsHashList(queriesController.listAllNeighborsAsUUIDStringList(uuid));
+			nodes.put(uuid, node);
+		}
+
+		int count = 0;
+
+		Simulation.setSimulationData(simulationData);
+
+		// Contagem parcial de fitness
+		int steps = simulationData.getPlotDensity();
+		int step = simulationData.getCycles() / steps;
+		if (step == 0)
+			step++;
+
+		long tStart = System.currentTimeMillis();
+		simulationResults.fixationCycles = -1;
+
+		for (count = 0; count < simulationData.getCycles(); count++) {
+			
+			Simulation.cycleV6(nodes, simulationData.getDeathRate(), simulationData.isNeighborhoodInheritance());
+
+			List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
+			
+			int ephcount = 0;
+			for(GsopNode n : nodeslist) {
+				if(n.getEph()!=null) {
+					ephcount++;
+				}
+			}
+			simulationResults.ephPopHistory.add(ephcount);	
+
+			if (Simulation.typeCount("A", nodeslist) == 0 || Simulation.typeCount("A", nodeslist) == nodeslist.size()) {
+				simulationResults.fixationCycles = count;
+				break;
+			}
+		}
+
+		long tEnd = System.currentTimeMillis();
+		long tDelta = tEnd - tStart;
+		double elapsedSeconds = tDelta / 1000.0;
+
+		List<GsopNode> nodeslist = new ArrayList<GsopNode>(nodes.values());
+
+		simulationResults.finalNodes = (ArrayList<GsopNode>) nodeslist;
+		simulationResults.elapsedSeconds = elapsedSeconds;
+
+		return simulationResults;
+	}
+	
 	public static SimulationResults runSimV5(SimulationData simulationData) {
 
 		SimulationResults simulationResults = new SimulationResults();

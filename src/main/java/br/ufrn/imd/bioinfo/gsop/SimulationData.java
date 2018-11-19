@@ -15,6 +15,7 @@ public class SimulationData {
 	private double ephBirthGenerationChance;
 	private boolean neighborhoodInheritance;
 	private boolean aOnly;
+	private int ephTime;
 	
 	private List<String> nodeDetail;
 	
@@ -89,6 +90,12 @@ public class SimulationData {
 	}
 	public void setaOnly(boolean aOnly) {
 		this.aOnly = aOnly;
+	}
+	public int getEphTime() {
+		return ephTime;
+	}
+	public void setEphTime(int ephTime) {
+		this.ephTime = ephTime;
 	}
 	
 	

@@ -8,6 +8,7 @@ public class SimulationResults {
 
 	public ArrayList<Integer> typeAPopHistory;
 	public ArrayList<Integer> typeBPopHistory;
+	public ArrayList<Integer> ephPopHistory;
 	int typeAWithEph;
 	int typeBWithEph;
 	public ArrayList<Double> partialFitnessAvg;

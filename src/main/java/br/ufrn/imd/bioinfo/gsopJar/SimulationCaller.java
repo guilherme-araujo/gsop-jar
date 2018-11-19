@@ -94,6 +94,16 @@ private int builtGraphSize = 0;
 		//simResult = App.runSimV5(simulationData);
 		simulationResults = App.runSimV5(simulationData);
 	}
+	
+	public void runSimV6() {
+		this.builtGraphSize = queriesController.getNodeCount();
+		simulationData.setDeathRate(simulationData.getBirthRate());
+		simulationData.getTypes().get(0).setInitialCoeff(1.0);
+		simulationData.getTypes().get(1).setInitialCoeff(1.0);
+		simulationData.setInitialPopulation(builtGraphSize);
+		simulationData.setNeighborhoodInheritance(true);
+		simulationResults = App.runSimV6(simulationData);
+	}
 		
 	public String getSimResult() {
 		return simResult;

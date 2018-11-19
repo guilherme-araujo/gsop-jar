@@ -21,6 +21,7 @@ import br.ufrn.imd.bioinfo.gsop.database.Neo4jBootstrapper;
  */
 public class App {
 	public static String csv;
+	public static String ephHistory;
 
 	public static void main(String[] args) {
 
@@ -42,6 +43,8 @@ public class App {
 		String saveFile = "";
 		String graphtype = "";
 		Double ephStartRatio = 0.5;
+		boolean ephPopHistory = false;
+		Integer ephTime = 30;
 
 		// Parsing arguments
 		for (String arg : args) {
@@ -76,6 +79,12 @@ public class App {
 			} else if (arg.contains("--ephstartratio")) {
 				String esr[] = arg.split("=");
 				ephStartRatio = Double.parseDouble(esr[1]);
+			} else if (arg.contains("--ephPopHistory")) {
+				String epop[] = arg.split("=");
+				ephPopHistory = Boolean.parseBoolean(epop[1]);
+			} else if (arg.contains("--ephTime")) {
+				String ephtime[] = arg.split("=");
+				ephTime = Integer.parseInt(ephtime[1]);
 			}
 
 		}
@@ -105,11 +114,13 @@ public class App {
 			SimulationCaller simulation = new SimulationCaller();
 			simulation.getSimulationData().setCycles(cycles);
 			simulation.getSimulationData().setEphBonus(ephBonus);
-			simulation.getSimulationData().setEphStartRatio(ephStartRatio);			
+			simulation.getSimulationData().setEphStartRatio(ephStartRatio);		
+			simulation.getSimulationData().setEphTime(ephTime);
 			System.out.println(samples + " samples will be executed");
 			long tStart = System.currentTimeMillis();
 
 			csv = "";
+			ephHistory = "";
 
 			ExecutorService executorService = Executors.newFixedThreadPool(threads);
 
@@ -129,7 +140,9 @@ public class App {
 				//		+ results.avgCoeff + " Avg. fitness: " + results.avgFitness + " time: "
 				//		+ results.elapsedSeconds+" fixation cycles: "+results.fixationCycles;
 				csv += typeACount + ";" + typeBCount + ";" + results.fixationCycles + "\n";
-
+				for(Integer r :results.ephPopHistory) {
+					ephHistory += r+"\n\n";
+				}
 				//System.out.println(out);
 				latch.countDown();
 
@@ -169,6 +182,12 @@ public class App {
 				printWriter = new PrintWriter(fileWriter);
 				printWriter.println(info);
 				printWriter.close();
+				
+				fileWriter = new FileWriter("history-"+tag+".csv");
+				printWriter = new PrintWriter(fileWriter);
+				printWriter.println(ephHistory);
+				printWriter.close();
+				
 			} catch (Exception e) {
 				System.out.println("File error");
 			}
