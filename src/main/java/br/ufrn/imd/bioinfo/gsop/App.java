@@ -32,7 +32,9 @@ public class App {
 	public static SimulationResults runSimV6(SimulationData simulationData) {
 
 		SimulationResults simulationResults = new SimulationResults();
-
+		simulationResults.ephPopHistory = new ArrayList<Integer>();
+		simulationResults.typeAPopHistory = new ArrayList<Integer>();
+		simulationResults.typeBPopHistory = new ArrayList<Integer>();
 		QueriesController queriesController = new QueriesController();
 
 		Map<String, GsopNode> nodes = new HashMap<String, GsopNode>();
@@ -97,6 +99,8 @@ public class App {
 				}
 			}
 			simulationResults.ephPopHistory.add(ephcount);	
+			simulationResults.typeAPopHistory.add(Simulation.typeCount("A", nodeslist));
+			simulationResults.typeBPopHistory.add(Simulation.typeCount("B", nodeslist));
 
 			if (Simulation.typeCount("A", nodeslist) == 0 || Simulation.typeCount("A", nodeslist) == nodeslist.size()) {
 				simulationResults.fixationCycles = count;

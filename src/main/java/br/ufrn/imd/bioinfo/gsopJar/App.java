@@ -131,7 +131,7 @@ public class App {
 			Runnable task = () -> {
 				//final int count = i;
 				//System.out.println("Sample " + count);
-				simulation.runSimV5();
+				simulation.runSimV6();
 				SimulationResults results = simulation.getSimulationResults();
 				//resultList.add(results);
 				int typeACount = Simulation.typeCount("A", results.finalNodes);
@@ -140,9 +140,15 @@ public class App {
 				//		+ results.avgCoeff + " Avg. fitness: " + results.avgFitness + " time: "
 				//		+ results.elapsedSeconds+" fixation cycles: "+results.fixationCycles;
 				csv += typeACount + ";" + typeBCount + ";" + results.fixationCycles + "\n";
-				for(Integer r :results.ephPopHistory) {
-					ephHistory += r+"\n\n";
+				
+				
+				for(int i = 0; i < results.ephPopHistory.size(); i++) {
+					ephHistory += (Integer)results.ephPopHistory.get(i) +";"+
+							(Integer)results.typeAPopHistory.get(i)+";"+
+							(Integer)results.typeBPopHistory.get(i)+"\n\n";
 				}
+				
+				
 				//System.out.println(out);
 				latch.countDown();
 
@@ -183,10 +189,12 @@ public class App {
 				printWriter.println(info);
 				printWriter.close();
 				
-				fileWriter = new FileWriter("history-"+tag+".csv");
-				printWriter = new PrintWriter(fileWriter);
-				printWriter.println(ephHistory);
-				printWriter.close();
+				if(ephPopHistory==true) {
+					fileWriter = new FileWriter("history-"+tag+".csv");
+					printWriter = new PrintWriter(fileWriter);
+					printWriter.println(ephHistory);
+					printWriter.close();
+				}
 				
 			} catch (Exception e) {
 				System.out.println("File error");
